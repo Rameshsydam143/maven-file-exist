@@ -40,7 +40,7 @@ stages{
   */
   stage('UploadArtifactsIntoNexus'){
   steps{
-  nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: 'target/maven-web-application.war', type: 'war']], credentialsId: 'nexus', groupId: 'com.mt', nexusUrl: 'http://65.0.100.60:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'ramesh-snapshot', version: '0.0.1-SNAPSHOT'
+  nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: 'target/maven-web-application.war', type: 'war']], credentialsId: 'nexus', groupId: 'com.mt', nexusUrl: '65.0.100.60:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'ramesh-snapshot', version: '0.0.1-SNAPSHOT'
   sh  "mvn clean deploy"
   }
   }
