@@ -6,12 +6,12 @@ tools{
 maven 'maven-3.8.6'
 
 }
-
+/*
 triggers{
 pollSCM('* * * * *')
 }
 
-/*options{
+options{
 timestamps()
 buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
 }
@@ -31,19 +31,22 @@ stages{
   sh  "mvn clean package"
   }
   }
-/*
+ /*
  stage('ExecuteSonarQubeReport'){
   steps{
   sh  "mvn clean sonar:sonar"
   }
   }
-  
+  */
   stage('UploadArtifactsIntoNexus'){
   steps{
+  nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: 'target/maven-web-application.war', type: 'war']], credentialsId: 'nexus', groupId: 'com.mt', nexusUrl: 'http://65.0.100.60:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'ramesh-snapshot', version: '0.0.1-SNAPSHOT'
   sh  "mvn clean deploy"
   }
   }
-  
+}
+}	
+  /*
   stage('DeployAppIntoTomcat'){
   steps{
   sshagent(['bfe1b3c1-c29b-4a4d-b97a-c068b7748cd0']) {
@@ -68,6 +71,5 @@ post{
           body: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
           replyTo: 'devopstrainingblr@gmail.com'
  */	 
- }
-}
+ 
 
