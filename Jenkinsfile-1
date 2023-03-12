@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+        environment {
+            FILE="/opt/maven-9.0.73/webapps/maven-web-application.war"
+    }
+    tools{
+    maven 'maven3.8.6'
+    }
+    
+    stages {
+        stage('git') {
+            steps {
+               git 'https://github.com/Rameshsydam143/maven-web-application-jayadeep.git'
+            }
+        }
+        
+        stage('Maven') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+         stage('file check'){
+             steps{
+                 sshagent(['73c36c22-6a7a-4811-ba9b-29f69832eb36']) {
+                    sh """ 
+                    ssh ec2-user@172.31.1.251  "cd /opt/maven-9.0.73/webapps;  
+                      if [ -f "$FILE" ];
+                    then
+                      echo "$FILE is exist"
+                      rm -f "cd /opt/maven-9.0.73/webapps/maven-web-application.war"
+                    else
+                       echo "$FILE is not exist"
+                     fi  
+                       "
+                      """   
+            }
+        }
+        
+    }
+          stage('DeploytoContainer'){
+            steps{
+                sshagent(['73c36c22-6a7a-4811-ba9b-29f69832eb36']) {
+                    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.1.251:/opt/maven-9.0.73/webapps/"
+                }    
+            }
+        }
+    }
+}
+
+
+
